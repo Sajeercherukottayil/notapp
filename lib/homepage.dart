@@ -12,7 +12,7 @@ class homepage extends StatefulWidget {
 class _homepageState extends State<homepage> {
 
   final TextEditingController _nameController = TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
 
   @override
   void dispose() {
@@ -29,19 +29,19 @@ class _homepageState extends State<homepage> {
         .catchError((error) => print('Failed to delete : $error'));
   }
 
-  // void updateUser( String newtiltle,String newcontent,String newdate,) {
-  //   FirebaseFirestore.instance
-  //       .collection('Notes')
-  //       .doc(newtiltle)
-  //       .update({
-  //     'note_title': newtiltle,
-  //     'note_content': newcontent,
-  //     'note_time': newdate,
-  //
-  //       })
-  //       .then((value) => print('note updated successfully'))
-  //       .catchError((error) => print('Failed to update : $error'));
-  // }
+  void updateUser( String newtiltle,String newcontent,String newdate,) {
+    FirebaseFirestore.instance
+        .collection('Notes')
+        .doc(newtiltle)
+        .update({
+      'note_title': newtiltle,
+      'note_content': newcontent,
+      'note_time': newdate,
+
+        })
+        .then((value) => print('note updated successfully'))
+        .catchError((error) => print('Failed to update : $error'));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,15 +72,15 @@ appBar: AppBar(
 
                 List<Widget> noteList = List<Widget>.from(
                   snapshot.data!.docs.map((DocumentSnapshot doc) {
-                  //  String userId = doc.id;
-                    String name =
+
+                    String title =
                         (doc.data() as Map<String, dynamic>)['note_title'] as String? ?? '';
                     String content =
                         (doc.data() as Map<String, dynamic>)['note_content'] as String? ?? '';
                     String time =
                         (doc.data() as Map<String, dynamic>)['note_time'] as String? ?? '';
                     return ListTile(
-                        title: Text('$name'),
+                        title: Text('$title'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -91,36 +91,36 @@ appBar: AppBar(
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            // IconButton(
-                            //   icon: Icon(Icons.edit),
-                            //   onPressed: () {
-                            //     showDialog(
-                            //       context: context,
-                            //       builder: (BuildContext context) {
-                            //         return AlertDialog(
-                            //           title: Text('Edit note'),
-                            //           content: Column(
-                            //             mainAxisSize: MainAxisSize.min,
-                            //             children: [
-                            //               Text('New Name:'),
-                            //               TextFormField(
-                            //                 controller:
-                            //                 TextEditingController(text: name),
-                            //                 onChanged: (value) {
-                            //                   name = value;
-                            //                 },
-                            //               ),
-                            //             ],
-                            //           ),
-                            //         );
-                            //       },
-                            //     ).then((value) {
-                            //       if (name != null && name.isNotEmpty) {
-                            //         //updateUser(userId, name);
-                            //       }
-                            //     });
-                            //   },
-                            // ),
+                            IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Edit note'),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Text('New Title:'),
+                                          TextFormField(
+                                            controller:
+                                            TextEditingController(text: title),
+                                            onChanged: (value) {
+                                              title = value;
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ).then((value) {
+                                  if (title != null && title.isNotEmpty) {
+                                    updateUser(title,content,time);
+                                  }
+                                });
+                              },
+                            ),
                             IconButton(
                               icon: Icon(Icons.delete),
                               onPressed: () {
